@@ -30,7 +30,45 @@
 		
 		<script src="json/json2.js"> </script>
 		
-		<script src="csv2json.js"></script>
+		<script src="csv2json.js"></script> 
+		
+		<script type="text/javascript"> 
+		
+		function setMessage (message, error)
+		{ 
+			if(document.getElementById("message")) {
+				document.getElementById("message").innerHTML = '<p>' + message + '</p>';
+
+				if (error)
+					document.getElementById("message").className = "error";
+				else
+					document.getElementById("message").className = "";
+			}
+		}
+		
+		function csvToJson ()
+		{
+			var message = "";
+			var error = false;
+			var f = document.forms["convertForm"];
+			var csvText = f.elements["csv"].value;
+			var jsonText = "";
+
+			setMessage(message, error);
+
+			if (csvText == "") { error = true; message = "Enter CSV text below."; }
+
+			if (!error) {
+				jsonText = c2j.csv2json(csvText);
+
+					f.elements["json"].value = jsonText;
+
+			}
+
+			setMessage(message, error);
+
+		}
+		</script>
 	</head>
 	<body>
 		<p>Notes:</p>

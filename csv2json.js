@@ -1,19 +1,27 @@
-function csv2json(csvText) {    
+var c2j;
+if(!c2j) {
+	c2j = {};
+}                
+
+(function () {
+    'use strict';
+
+c2j.csv2json = function(csvText) {    
 	var csvRows = [];
 	var objArr = [];
 	var jsonText = "";
-	csvRows = splitIntoRows(csvText);
+	csvRows = this.splitIntoRows(csvText);
 	if (csvRows.length < 2) { 
-		error = true; message = "The CSV text MUST have a header row!"; 
-		return JSON.stringify({"error": message})
+		c2j.error = true; c2j.message = "The CSV text MUST have a header row!"; 
+		return JSON.stringify({"error": c2j.message})
 	}
-	var headers = parseCSVLine(csvRows.shift());
+	var headers = this.parseCSVLine(csvRows.shift());
 	                      
 	var jsonData = [];
 	
 	for (var i = 0; i < csvRows.length; i++)
 	{
-		csvRows[i] = parseCSVLine(csvRows[i]);
+		csvRows[i] = this.parseCSVLine(csvRows[i]);
 	}
 	
 	for (var i = 0; i < csvRows.length; i++)
@@ -31,7 +39,7 @@ function csv2json(csvText) {
 	return jsonText; 
 }
 
-function splitIntoRows(csvData) {
+c2j.splitIntoRows = function(csvData) {
 	var csvRows = csvData.split(/[\r\n]/g); // split into rows
 	
 	// get rid of empty rows
@@ -46,19 +54,7 @@ function splitIntoRows(csvData) {
 	return csvRows;
 }
 
-function setMessage (message, error)
-{ 
-	if(document.getElementById("message")) {
-		document.getElementById("message").innerHTML = '<p>' + message + '</p>';
-	
-		if (error)
-			document.getElementById("message").className = "error";
-		else
-			document.getElementById("message").className = "";
-	}
-}
-
-function parseCSVLine (line)
+c2j.parseCSVLine = function(line)
 {
 	line = line.split(',');
 	
@@ -103,26 +99,7 @@ function parseCSVLine (line)
 	
 	return line;
 }
+ 
+}());
 
-function csvToJson ()
-{
-	var message = "";
-	var error = false;
-	var f = document.forms["convertForm"];
-	var csvText = f.elements["csv"].value;
-	var jsonText = "";
-	
-	setMessage(message, error);
-	
-	if (csvText == "") { error = true; message = "Enter CSV text below."; }
-	
-	if (!error) {
-		jsonText = csv2json(csvText);
-			
-			f.elements["json"].value = jsonText;
-			
-	}
-	
-	setMessage(message, error);
-
-}  
+  

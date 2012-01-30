@@ -21,7 +21,7 @@
 				var sample_csv = "";
 				var expected_json = "{\"error\":\"The CSV text MUST have a header row!\"}";
 				deepEqual(
-					JSON.parse(csv2json(sample_csv)), 
+					JSON.parse(c2j.csv2json(sample_csv)), 
 					JSON.parse(expected_json)
 				);
 			}
@@ -36,7 +36,7 @@
 "					}" +
 "				]";
 				deepEqual(
-					JSON.parse(csv2json(sample_csv)), 
+					JSON.parse(c2j.csv2json(sample_csv)), 
 					JSON.parse(expected_json)
 				);
 			}
