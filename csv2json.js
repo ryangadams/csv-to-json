@@ -6,35 +6,41 @@ if(!c2j) {
 (function () {
     'use strict';
 
-c2j.csv2json = function(csvText) {    
+c2j.csv2js = function(csvText) {    
 	var csvRows = [];
 	var objArr = [];
 	var jsonText = "";
 	csvRows = this.splitIntoRows(csvText);
 	if (csvRows.length < 2) { 
 		c2j.error = true; c2j.message = "The CSV text MUST have a header row!"; 
-		return JSON.stringify({"error": c2j.message})
+		return {"error": c2j.message}
 	}
 	var headers = this.parseCSVLine(csvRows.shift());
-	                      
+
 	var jsonData = [];
-	
+
 	for (var i = 0; i < csvRows.length; i++)
 	{
 		csvRows[i] = this.parseCSVLine(csvRows[i]);
 	}
-	
+
 	for (var i = 0; i < csvRows.length; i++)
 	{
 		if (csvRows[i].length > 0) jsonData.push({});
-		
+
 		for (var j = 0; j < csvRows[i].length; j++)
 		{
 			jsonData[i][headers[j]] = csvRows[i][j];
 		}
 	}                            
+
+	return jsonData; 
+}
+
+c2j.csv2json = function(csvText) {   
+	var jsonData = this.csv2js(csvText);
 	
-	jsonText = JSON.stringify(jsonData, null, "\t");
+	var jsonText = JSON.stringify(jsonData, null, "\t");
 
 	return jsonText; 
 }

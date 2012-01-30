@@ -41,6 +41,19 @@
 				);
 			}
 		);
+		test("csv2js returns a javascript object", function(){
+			var sample_csv = "row_header1, row_header2\nvalue_1, value_2";
+			var expected_json = "[" +
+"					{" +
+"						\"row_header1\": \"value_1\"," +
+"						\"row_header2\": \"value_2\"" +
+"					}" +
+"				]";
+			deepEqual(
+				c2j.csv2js(sample_csv), 
+				JSON.parse(expected_json)
+			);
+		});
 	</script>
 </body>
 </html>
