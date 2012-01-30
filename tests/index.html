@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Qunit Tests for CSV 2 JSON</title>
+    <script type="text/javascript" src="qunit/qunit/qunit.js"></script>
+    <script type="text/javascript" src="../csv2json.js"></script>
+	<link rel="stylesheet" type="text/css" href="qunit/qunit/qunit.css" />
+</head> 
+<body id="index" onload="">
+	<h1 id="qunit-header">QUnit for CSV2JSON</h1>
+	 <h2 id="qunit-banner"></h2>
+	 <div id="qunit-testrunner-toolbar"></div>
+	 <h2 id="qunit-userAgent"></h2>
+	 <ol id="qunit-tests"></ol>
+	 <div id="qunit-fixture">test markup, will be hidden</div>	
+	<script type="text/javascript">
+		module("converts a sample csv string to json");
+		test("returns an error json string when passed an empty string", 
+			function() {
+				var sample_csv = "";
+				var expected_json = "{\"error\":\"The CSV text MUST have a header row!\"}";
+				deepEqual(
+					JSON.parse(csv2json(sample_csv)), 
+					JSON.parse(expected_json)
+				);
+			}
+		);	
+		test("returns json when passed a csv string", 
+			function() {
+				var sample_csv = "row_header1, row_header2\nvalue_1, value_2";
+				var expected_json = "[" +
+"					{" +
+"						\"row_header1\": \"value_1\"," +
+"						\"row_header2\": \"value_2\"" +
+"					}" +
+"				]";
+				deepEqual(
+					JSON.parse(csv2json(sample_csv)), 
+					JSON.parse(expected_json)
+				);
+			}
+		);
+	</script>
+</body>
+</html>
