@@ -1,7 +1,6 @@
-var csvRows = []; var objArr = [];
-var benchmarkStart, benchmarkParseEnd, benchmarkObjEnd, benchmarkJsonEnd, benchmarkPopulateEnd;
-
 function csv2json(csvText) {    
+	var csvRows = [];
+	var objArr = [];
 	var jsonText = "";
 	csvRows = splitIntoRows(csvText);
 	if (csvRows.length < 2) { 
@@ -17,8 +16,6 @@ function csv2json(csvText) {
 		csvRows[i] = parseCSVLine(csvRows[i]);
 	}
 	
-	benchmarkParseEnd = new Date();
-	
 	for (var i = 0; i < csvRows.length; i++)
 	{
 		if (csvRows[i].length > 0) jsonData.push({});
@@ -27,13 +24,9 @@ function csv2json(csvText) {
 		{
 			jsonData[i][headers[j]] = csvRows[i][j];
 		}
-	}
-	
-	benchmarkObjEnd = new Date();
+	}                            
 	
 	jsonText = JSON.stringify(jsonData, null, "\t");
-	
-	benchmarkJsonEnd = new Date();
 
 	return jsonText; 
 }
@@ -123,33 +116,13 @@ function csvToJson ()
 	
 	if (csvText == "") { error = true; message = "Enter CSV text below."; }
 	
-	if (!error)
-	{
-		benchmarkStart = new Date();
+	if (!error) {
 		jsonText = csv2json(csvText);
 			
 			f.elements["json"].value = jsonText;
 			
-			benchmarkPopulateEnd = new Date();
-			
-			message = getBenchmarkResults();
 	}
 	
 	setMessage(message, error);
 
 }  
-
-function getBenchmarkResults ()
-{
-	var message = "";
-	var totalTime = benchmarkPopulateEnd.getTime() - benchmarkStart.getTime();
-	
-	var timeDiff = (benchmarkParseEnd.getTime() - benchmarkStart.getTime()); var mostTime = "parsing CSV text";
-	if ((benchmarkObjEnd.getTime() - benchmarkParseEnd.getTime()) > timeDiff) { timeDiff = (benchmarkObjEnd.getTime() - benchmarkParseEnd.getTime()); mostTime = "converting to objects"; }
-	if ((benchmarkJsonEnd.getTime() - benchmarkObjEnd.getTime()) > timeDiff) { timeDiff = (benchmarkJsonEnd.getTime() - benchmarkObjEnd.getTime()); mostTime = "building JSON text"; }
-	if ((benchmarkPopulateEnd.getTime() - benchmarkJsonEnd.getTime()) > timeDiff) { timeDiff = (benchmarkPopulateEnd.getTime() - benchmarkJsonEnd.getTime()); mostTime = "populating JSON text"; }
-	
-	message += csvRows.length + " CSV line" + (csvRows.length > 1 ? 's' : "") + " converted into " + objArr.length + " object" + (objArr.length > 1 ? 's' : "") + " in " + (totalTime / 1000) + " seconds, with an average of " + ((totalTime / 1000) / csvRows.length) + " seconds per object. Most of the time was spent on " + mostTime + ", which took " + (timeDiff / 1000) + " seconds.";
-	
-	return message;
-}
