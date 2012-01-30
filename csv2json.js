@@ -3,7 +3,43 @@ var benchmarkStart, benchmarkParseEnd, benchmarkObjEnd, benchmarkJsonEnd, benchm
 
 function csv2json(csvText) {    
 	var jsonText = "";
-	csvRows = csvText.split(/[\r\n]/g); // split into rows
+	csvRows = splitIntoRows(csvText);
+	if (csvRows.length < 2) { 
+		error = true; message = "The CSV text MUST have a header row!"; 
+		return JSON.stringify({"error": message})
+	}
+	var headers = parseCSVLine(csvRows.shift());
+	                      
+	var jsonData = [];
+	
+	for (var i = 0; i < csvRows.length; i++)
+	{
+		csvRows[i] = parseCSVLine(csvRows[i]);
+	}
+	
+	benchmarkParseEnd = new Date();
+	
+	for (var i = 0; i < csvRows.length; i++)
+	{
+		if (csvRows[i].length > 0) jsonData.push({});
+		
+		for (var j = 0; j < csvRows[i].length; j++)
+		{
+			jsonData[i][headers[j]] = csvRows[i][j];
+		}
+	}
+	
+	benchmarkObjEnd = new Date();
+	
+	jsonText = JSON.stringify(jsonData, null, "\t");
+	
+	benchmarkJsonEnd = new Date();
+
+	return jsonText; 
+}
+
+function splitIntoRows(csvData) {
+	var csvRows = csvData.split(/[\r\n]/g); // split into rows
 	
 	// get rid of empty rows
 	for (var i = 0; i < csvRows.length; i++)
@@ -13,39 +49,8 @@ function csv2json(csvText) {
 			csvRows.splice(i, 1);
 			i--;
 		}
-	}
-	
-	if (csvRows.length < 2) { 
-		error = true; message = "The CSV text MUST have a header row!"; 
-		return JSON.stringify({"error": message})
-	} else {
-		objArr = [];
-		
-		for (var i = 0; i < csvRows.length; i++)
-		{
-			csvRows[i] = parseCSVLine(csvRows[i]);
-		}
-		
-		benchmarkParseEnd = new Date();
-		
-		for (var i = 1; i < csvRows.length; i++)
-		{
-			if (csvRows[i].length > 0) objArr.push({});
-			
-			for (var j = 0; j < csvRows[i].length; j++)
-			{
-				objArr[i - 1][csvRows[0][j]] = csvRows[i][j];
-			}
-		}
-		
-		benchmarkObjEnd = new Date();
-		
-		jsonText = JSON.stringify(objArr, null, "\t");
-		
-		benchmarkJsonEnd = new Date();
-	
-		return jsonText; 
-	}
+	}   
+	return csvRows;
 }
 
 function setMessage (message, error)
