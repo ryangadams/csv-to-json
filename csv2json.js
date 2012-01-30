@@ -44,7 +44,8 @@ function csv2json(csvText) {
 		
 		benchmarkJsonEnd = new Date();
 	
-		return jsonText;
+		return jsonText; 
+	}
 }
 
 function setMessage (message, error)
@@ -127,11 +128,11 @@ function csvToJson ()
 			benchmarkPopulateEnd = new Date();
 			
 			message = getBenchmarkResults();
-		}
 	}
 	
 	setMessage(message, error);
-}
+
+}  
 
 function getBenchmarkResults ()
 {
